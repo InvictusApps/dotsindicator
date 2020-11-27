@@ -73,11 +73,25 @@ class SpringDotsIndicator @JvmOverloads constructor(context: Context, attrs: Att
     dotIndicatorSize = dotsSize - dotsStrokeWidth
 
     if (isInEditMode) {
-      addDots(5)
+      addDots(3)
       addView(buildDot(false))
+
     }
 
     setUpDotIndicator()
+    setDotSelected(1,1f)
+  }
+
+  fun setDotsCount(count: Int) {
+    addDots(count)
+    addView(buildDot(false))
+  }
+
+  fun setDotSelected(index: Int, positionOffset: Float) {
+    val distance = dotsSize + dotsSpacing * 2
+    val x = (dots[index].parent as ViewGroup).left
+    val globalPositionOffsetPixels = x + distance * positionOffset + dotsStrokeWidth - 2
+    dotIndicatorSpring?.animateToFinalPosition(globalPositionOffsetPixels)
   }
 
   private fun setUpDotIndicator() {
@@ -157,6 +171,7 @@ class SpringDotsIndicator @JvmOverloads constructor(context: Context, attrs: Att
         get() = dots.size
 
       override fun onPageScrolled(selectedPosition: Int, nextPosition: Int, positionOffset: Float) {
+        println("POSITION OFFSET $positionOffset")
         val distance = dotsSize + dotsSpacing * 2
         val x = (dots[selectedPosition].parent as ViewGroup).left
         val globalPositionOffsetPixels = x + distance * positionOffset + dotsStrokeWidth - 2
